@@ -1,0 +1,20 @@
+{
+  "name": "robot-voice",
+  "version": "1.0.0",
+  "description": "Голос робота для Claude Code: оценка запроса значком перед работой и реплика с советом по постановке после",
+  "author": {
+    "name": "mpashka",
+    "url": "https://github.com/mpashka"
+  },
+  "homepage": "https://github.com/mpashka/ai-robot-voice",
+  "repository": "https://github.com/mpashka/ai-robot-voice",
+  "license": "MIT",
+  "keywords": [
+    "hooks",
+    "feedback",
+    "prompt-quality",
+    "tts",
+    "russian"
+  ],
+  "hooks": "./hooks/hooks.json"
+}

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+text=${1-}
+[[ -n $text && ${#text} -le 240 && $text != *$'\n'* ]] || {
+  echo 'speak-brief: pass one non-empty, single-line phrase of at most 240 characters' >&2
+  exit 2
+}
+
+command -v RHVoice-test >/dev/null && command -v ffplay >/dev/null || {
+  echo 'speak-brief: install rhvoice, rhvoice-russian, and ffmpeg' >&2
+  exit 127
+}
+
+settings=${XDG_CONFIG_HOME:-$HOME/.config}/robot-voice-hook/settings.json
+IFS='|' read -r audio_enabled voice rate pitch < <(SETTINGS_PATH="$settings" node -e '
+const fs = require("fs"); let s = {};
+try { s = JSON.parse(fs.readFileSync(process.env.SETTINGS_PATH, "utf8")); } catch {}
+console.log(`${s.audio_enabled !== false}|${s.voice ?? "mikhail"}|${s.rate ?? 92}|${s.pitch ?? 94}`);
+')
+[[ $audio_enabled == true ]] || exit 0
+[[ $voice =~ ^[a-z0-9-]+$ ]] || voice=mikhail
+[[ $rate =~ ^[0-9]+$ && $rate -ge 50 && $rate -le 150 ]] || rate=92
+[[ $pitch =~ ^[0-9]+$ && $pitch -ge 50 && $pitch -le 150 ]] || pitch=94
+
+audio_dir=$(mktemp -d /tmp/robot-voice.XXXXXX)
+trap 'rm -rf -- "$audio_dir"' EXIT
+audio_file=$audio_dir/phrase.wav
+printf '%s\n' "$text" | RHVoice-test --profile "$voice" --rate "$rate" --pitch "$pitch" --output "$audio_file"
+ffplay -nodisp -autoexit -loglevel error "$audio_file"

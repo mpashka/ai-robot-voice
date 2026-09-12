@@ -1,0 +1,10 @@
+# Машинное состояние робота живёт в ~/.config/robot-voice-hook/, но если каталог настроек
+# окажется внутри репозитория (XDG_CONFIG_HOME, эксперимент, копия), эти файлы не поедут.
+settings.json
+context-offers.json
+rules-delivery.json
+recent-phrases.json
+
+*.log
+*.tmp
+.DS_Store

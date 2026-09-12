@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ai-robot-voice",
+  "description": "Голос робота: обратная связь агента о том, как поставлена задача",
+  "owner": {
+    "name": "mpashka",
+    "url": "https://github.com/mpashka"
+  },
+  "plugins": [
+    {
+      "name": "robot-voice",
+      "description": "Голос робота для Claude Code: оценка запроса значком перед работой и реплика с советом по постановке после",
+      "author": {
+        "name": "mpashka"
+      },
+      "version": "1.0.0",
+      "category": "productivity",
+      "homepage": "https://github.com/mpashka/ai-robot-voice",
+      "source": "./"
+    }
+  ]
+}

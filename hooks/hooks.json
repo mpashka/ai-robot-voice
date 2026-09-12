@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/inject-voice-rule.js\"",
+            "timeout": 15,
+            "statusMessage": "Robot voice sizing you up..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/speak-stop.js\"",
+            "timeout": 8,
+            "statusMessage": "Robot voice..."
+          }
+        ]
+      }
+    ]
+  }
+}
