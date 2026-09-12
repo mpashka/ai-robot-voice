@@ -1,6 +1,6 @@
 {
   "name": "robot-voice",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Голос робота для Claude Code: оценка запроса значком перед работой и реплика с советом по постановке после",
   "author": {
     "name": "mpashka",

@@ -1,0 +1,20 @@
+{
+  "name": "ai-robot-voice",
+  "interface": {
+    "displayName": "AI Robot Voice"
+  },
+  "plugins": [
+    {
+      "name": "robot-voice",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

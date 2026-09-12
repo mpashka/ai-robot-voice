@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.2 — 2026-09-12
+
+- плагин ставится и в Codex из того же репозитория: `.codex-plugin/plugin.json` и витрина
+  `.agents/plugins/marketplace.json` (`codex plugin marketplace add mpashka/ai-robot-voice`).
+  Прежняя установка Codex жила машинным каталогом `~/plugins/robot-voice-hook` под именем
+  `robot-voice-hook@personal`
+- README: установка для двух агентов, обновление версии в Codex и доверие к хукам
+
+Поведение робота не менялось.
+
 ## 1.0.1 — 2026-09-12
 
 - `plugin.json` больше не ссылается на `hooks/hooks.json`: Claude Code грузит этот файл сам, и

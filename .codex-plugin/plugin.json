@@ -1,0 +1,31 @@
+{
+  "name": "robot-voice",
+  "version": "1.0.2",
+  "description": "Голос робота для Codex: оценка запроса значком перед работой и реплика с советом по постановке после",
+  "author": {
+    "name": "mpashka",
+    "url": "https://github.com/mpashka"
+  },
+  "homepage": "https://github.com/mpashka/ai-robot-voice",
+  "repository": "https://github.com/mpashka/ai-robot-voice",
+  "license": "MIT",
+  "keywords": [
+    "hooks",
+    "feedback",
+    "prompt-quality",
+    "tts",
+    "russian"
+  ],
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "Robot Voice",
+    "shortDescription": "Голос робота и обратная связь о постановке",
+    "longDescription": "Оценивает каждый запрос по понятности и объёму, открывает ход короткой репликой робота со значком и заканчивает его одним советом: чего не хватило в постановке.",
+    "developerName": "mpashka",
+    "category": "Productivity",
+    "capabilities": [
+      "Lifecycle hooks"
+    ],
+    "defaultPrompt": "Включи голос робота с обратной связью о постановке задачи."
+  }
+}

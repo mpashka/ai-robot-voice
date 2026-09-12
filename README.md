@@ -1,6 +1,6 @@
-# robot-voice — плагин Claude Code: голос робота и обратная связь о постановке
+# robot-voice — плагин Claude Code и Codex: голос робота и обратная связь о постановке
 
-Плагин вешается на два события Claude Code и делает из них обратную связь **о том, как
+Плагин вешается на два события агента и делает из них обратную связь **о том, как
 поставлена задача**, а не о том, как справился агент.
 
 - **Перед работой** классификатор (отдельный дешёвый запуск `claude`) оценивает запрос по двум
@@ -18,6 +18,11 @@
 
 ## Установка
 
+Один репозиторий — витрина и плагин для обоих агентов: код, промпты и настройки общие, расходятся
+только манифесты (`.claude-plugin/` и `.codex-plugin/` с `.agents/plugins/marketplace.json`).
+
+### Claude Code
+
 ```
 /plugin marketplace add mpashka/ai-robot-voice
 /plugin install robot-voice@ai-robot-voice
@@ -34,6 +39,21 @@
   "enabledPlugins": { "robot-voice@ai-robot-voice": true }
 }
 ```
+
+### Codex
+
+```bash
+codex plugin marketplace add mpashka/ai-robot-voice --ref main && codex plugin add robot-voice@ai-robot-voice
+```
+
+Новая версия — `codex plugin marketplace upgrade ai-robot-voice`: снимок витрины обновляется, и
+установленная копия в `~/.codex/plugins/cache/ai-robot-voice/robot-voice/<версия>/` меняется
+вместе с ним. Версия берётся из `.codex-plugin/plugin.json` — правка без её подъёма не доедет.
+
+🚨 Хуки Codex не запускает без доверия: первая сессия после установки спросит, доверять ли
+`hooks/hooks.json`, и запишет хэш в `~/.codex/config.toml`. Доверие привязано к имени
+`robot-voice@ai-robot-voice` и содержимому `hooks/hooks.json`, поэтому правка этого файла или
+переименование плагина спрашивают заново.
 
 Голос — необязательная часть: без `RHVoice-test` и `ffplay` робот просто молчит, текстовые
 реплики остаются. Классификатор — тоже: без доступной команды `claude` значок сменится на ❔,
@@ -180,6 +200,8 @@ Claude Code кладёт `additionalContext` длиннее 10 000 символ�
 
 | Путь | Что там |
 |---|---|
+| `.claude-plugin/` | манифест плагина и витрины Claude Code |
+| `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` | манифест плагина и витрина Codex |
 | `hooks/hooks.json` | подписка на `UserPromptSubmit` и `Stop` через `${CLAUDE_PLUGIN_ROOT}` |
 | `hooks/inject-voice-rule.js` | ядро: настройки, набор значков, куски правил, стартовая реплика |
 | `hooks/analyze-prompt.js` | классификатор: запуск дочернего `claude` и разбор стенограммы |
