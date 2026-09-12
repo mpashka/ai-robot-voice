@@ -15,6 +15,5 @@
     "prompt-quality",
     "tts",
     "russian"
-  ],
-  "hooks": "./hooks/hooks.json"
+  ]
 }

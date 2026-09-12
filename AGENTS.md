@@ -24,3 +24,9 @@
 раскладка `~/.config/robot-voice-hook/settings.json` и объявление плагина в `~/.claude/settings.json` —
 роль `ai_agents` в `home-infra` (`cfg ansible apply ai-agents`). Правится значение — правится
 реестр, а не файл на машине.
+
+## Грабли
+
+- 🚨 **`hooks` в `plugin.json` не пишется.** Файл `hooks/hooks.json` Claude Code загружает сам,
+  а ссылка на него в манифесте делает его вторым — плагин отваливается целиком с «Duplicate
+  hooks file detected». Ключ нужен только для хуков в файле с другим именем.
