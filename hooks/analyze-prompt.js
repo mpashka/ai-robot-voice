@@ -6,6 +6,7 @@ const { spawnSync } = require('child_process');
 const bin = process.env.ROBOT_VOICE_CLAUDE_BIN || 'claude';
 const maxBytes = 33554432;
 const maxWords = 18;
+const agentTailChars = 4000;
 
 // Дочерний claude запускается с --setting-sources '' и пустым --mcp-config: без этого
 // он поднял бы наши же хуки (бесконечная рекурсия) и весь системный промпт с описаниями
@@ -51,6 +52,32 @@ function userTexts(raw, limit) {
   return { turns, previous: result.reverse() };
 }
 
+// Короткий запрос вроде «готов» или «второй» — ответ на вопрос агента, и без этого вопроса
+// классификатор принимает его за бессмыслицу. Берётся хвост: вопрос стоит в конце ответа.
+// Поиск останавливается на предыдущем запросе пользователя — раньше него ответ уже не к
+// текущему запросу. Claude Code пишет блок текста записью type:"assistant", Codex — записью
+// response_item с role:"assistant".
+function lastAgentText(raw) {
+  const lines = raw.split('\n');
+  for (let index = lines.length - 1; index >= 0; index--) {
+    const line = lines[index];
+    if (line.includes('"promptSource"')) return '';
+    if (!line.includes('"assistant"')) continue;
+    let entry;
+    try { entry = JSON.parse(line.trim()); } catch { continue; }
+    const content = entry.type === 'assistant'
+      ? entry.message?.content
+      : entry.payload?.role === 'assistant' ? entry.payload.content : null;
+    if (!Array.isArray(content)) continue;
+    const text = clean(content
+      .filter((block) => block?.type === 'text' || block?.type === 'output_text')
+      .map((block) => block.text)
+      .join(' '));
+    if (text) return text.slice(-agentTailChars);
+  }
+  return '';
+}
+
 // Размер контекста берётся не из размера файла, а из usage последнего ответа модели: это
 // настоящее число токенов, которое ушло в окно, а килобайты стенограммы с ним связаны слабо.
 function contextTokens(raw) {
@@ -85,7 +112,7 @@ function compactions(raw) {
 // Файл читается целиком: 500 КБ разбираются за пару миллисекунд, а запросы пользователя
 // в длинной сессии лежат в начале. Хвост берётся только у аномально разросшихся стенограмм.
 function transcript(transcriptPath) {
-  const facts = { kb: 0, turns: 0, tokens: 0, compactions: 0, previous: [] };
+  const facts = { kb: 0, turns: 0, tokens: 0, compactions: 0, previous: [], agent: '' };
   if (!transcriptPath) return facts;
   try {
     const { size } = fs.statSync(transcriptPath);
@@ -96,6 +123,7 @@ function transcript(transcriptPath) {
     try { fs.readSync(handle, buffer, 0, buffer.length, start); } finally { fs.closeSync(handle); }
     const raw = buffer.toString('utf8');
     Object.assign(facts, userTexts(raw, 3));
+    facts.agent = lastAgentText(raw);
     facts.tokens = contextTokens(raw);
     facts.compactions = compactions(raw);
   } catch {}
@@ -139,6 +167,7 @@ function analyze(options) {
     facts.previous.length
       ? `Предыдущие запросы пользователя в этой сессии:\n${facts.previous.map((text) => `- ${text}`).join('\n')}`
       : 'Это первый запрос в сессии, предыдущего контекста нет.',
+    facts.agent ? `Последнее сообщение агента, на которое отвечает пользователь (конец):\n${facts.agent}` : '',
     '--- Текущий запрос ---',
     String(options.prompt || '').slice(0, 2000),
     'Верни строго одну строку JSON и ничего больше: {"clarity":<0-3>,"complexity":<0-3>,"signal":"…","phrase":"…"}',

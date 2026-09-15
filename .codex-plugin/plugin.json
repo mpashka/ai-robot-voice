@@ -1,6 +1,6 @@
 {
   "name": "robot-voice",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Голос робота для Codex: оценка запроса значком перед работой и реплика с советом по постановке после",
   "author": {
     "name": "mpashka",
