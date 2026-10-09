@@ -8,7 +8,7 @@ const limit = 24;
 const window = 8;
 
 function normalize(phrase) {
-  return String(phrase || '').toLowerCase().replace(/^🤖\s*/, '').replace(/\s+/g, ' ').trim();
+  return String(phrase || '').toLowerCase().replace(/^🤖(?:🤬)?\s*/, '').replace(/\s+/g, ' ').trim();
 }
 
 function recent(kind) {

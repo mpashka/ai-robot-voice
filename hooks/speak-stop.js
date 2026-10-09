@@ -18,7 +18,7 @@ process.stdin.on('end', () => {
     if (source) transcript = fs.readFileSync(source, 'utf8').slice(-524288);
   } catch {}
   const text = `${payload.last_assistant_message || ''}\n${transcript}`;
-  const robotLines = [...text.matchAll(/^🤖\s*([^\r\n]{1,240})\s*$/gmi)];
+  const robotLines = [...text.matchAll(/^🤖(?:🤬)?\s*([^\r\n]{1,240})\s*$/gmi)];
   const oldMarkers = [...text.matchAll(/<!--\s*ROBOT_VOICE:\s*([^<\r\n]{1,240})\s*-->/gi)];
   const raw = robotLines.at(-1)?.[1]?.trim() || oldMarkers.at(-1)?.[1]?.trim();
   // Значки исхода — для глаз, а не для синтезатора: он читает их названиями или молчит.
